@@ -1,5 +1,5 @@
 ### 0) requirement
-tensorflow 1.1.0 theano 0.9.0 Lasagne 0.2.dev1
+tensorflow 1.1.0	theano 0.9.0	Lasagne 0.2.dev1    python 2.7.10
 ### 1) Train the BiLSTM with attention on 80% of val data.
 
 ```bash
