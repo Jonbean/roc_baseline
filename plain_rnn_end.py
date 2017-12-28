@@ -55,9 +55,9 @@ class Hierachi_RNN(object):
         self.cross_val_index = int(cross_val_index)
         # Initialize data loading attributes
         self.wemb = None
-        self.val_set_path = '../data/pickles/val_index_corpus.pkl'
-        self.test_set_path = '../data/pickles/test_index_corpus.pkl' 
-        self.wemb_matrix_path = '../data/pickles/index_wemb_matrix.pkl'
+        self.val_set_path = './data/pickles/val_index_corpus.pkl'
+        self.test_set_path = './data/pickles/test_index_corpus.pkl' 
+        self.wemb_matrix_path = './data/pickles/index_wemb_matrix.pkl'
         self.saving_path_suffix = mode+'-'+'-'+loss_type+'-'+dnn_discriminator_setting+'-'+str(discrim_regularization_level)+'-'+str(dropout_rate)+'-'+cross_val_index
         # self.best_val_model_save_path = '/share/data/speech/Data/joncai/dev_best_model/Plaintendonly_best_model_'+self.saving_path_suffix+'.pkl' 
         
@@ -398,7 +398,7 @@ class Hierachi_RNN(object):
                 self.record_flag = True
             elif val_or_test == 'test' and self.record_flag:
                 self.record_flag = False
-                with open('./plaint_end'+self.saving_path_suffix+'.pkl','w') as f:
+                with open('./plain_end'+self.saving_path_suffix+'.pkl','w') as f:
                     pickle.dump(self.test_score_record_matrix, f)
             return acc
 
@@ -415,7 +415,7 @@ class Hierachi_RNN(object):
 
             elif val_or_test == 'test' and self.record_flag:
                 self.record_flag = False
-                with open('./plaint_end'+self.saving_path_suffix+'.pkl','w') as f:
+                with open('./plain_end'+self.saving_path_suffix+'.pkl','w') as f:
                     pickle.dump(self.test_score_record_matrix, f)
             return acc
 
