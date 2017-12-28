@@ -129,11 +129,11 @@ class ROC_data(object):
     def __init__(self, use_train=True, val_train_num = 1500):
         super(ROC_data, self).__init__()
         
-        self.train_set_path = '../data/pickles/train_index_corpus.pkl'
-        self.val_set_path = '../data/pickles/val_index_corpus.pkl'
-        self.test_set_path = '../data/pickles/test_index_corpus.pkl' 
-        self.wemb_matrix_path = '../data/pickles/index_wemb_matrix.pkl'
-        self.index2word_dict_path = '../data/pickles/index2word_dict.pkl'
+        self.train_set_path = './data/pickles/train_index_corpus.pkl'
+        self.val_set_path = './data/pickles/val_index_corpus.pkl'
+        self.test_set_path = './data/pickles/test_index_corpus.pkl' 
+        self.wemb_matrix_path = './data/pickles/index_wemb_matrix.pkl'
+        self.index2word_dict_path = './data/pickles/index2word_dict.pkl'
         self.use_train = use_train
         self.val_train_num = val_train_num
 
