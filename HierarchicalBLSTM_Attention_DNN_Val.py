@@ -102,7 +102,7 @@ class Hier_Att_DNN_Val(object):
                                                               output_style = 'sequence')
 
         self.sent_seqs = tf_utils.word_level_encoding(word_level_rnn=self.word_level_rnn, sents_num=self.story_nsent+2, 
-            inputs_variables=self.inputs_variables, sent_seq_len=self.sent_seq_len)[0]
+            inputs_variables=self.inputs_variables, sent_seq_len=self.sent_seq_len)
 
         """=======================Attention =========================
         | go through word level encdoing process for each sentence. |

@@ -131,27 +131,26 @@ def word_level_encoding(word_level_rnn, sents_num, inputs_variables, sent_seq_le
     '''
     sent_seqs = []
     states = []
-
-    sent_seq, state = word_level_rnn.BLSTM_encoder(inputs_variables[0], 
+    print(type(inputs_variables))
+    print(len(inputs_variables))
+    print(sent_seq_len)
+    sent_seq = word_level_rnn.BLSTM_encoder(inputs_variables[0], 
                                             sent_seq_len[0], 
                                             reuse = False, 
                                             variable_scope = 'word_level_rnn')
 
     sent_seqs.append(sent_seq)
-    states.append(state)
-
 
 
     for i in xrange(1, sents_num):
-        sent_seq, state = word_level_rnn.BLSTM_encoder(inputs_variables[i], 
+        sent_seq = word_level_rnn.BLSTM_encoder(inputs_variables[i], 
                                                 sent_seq_len[i], 
                                                 reuse = True, 
                                                 variable_scope = 'word_level_rnn')
 
         sent_seqs.append(sent_seq)
-        states.append(state)
 
-    return sent_seqs, states
+    return sent_seqs
 
 
 def sent_level_encoding_plot(sent_level_rnn, sent_reps, current_batch_size, reuse=False):

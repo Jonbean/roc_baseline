@@ -80,7 +80,8 @@ class single_layer_BLSTM_withWemb(object):
                                                     num_proj_shards=None, 
                                                     forget_bias=1.0, 
                                                     state_is_tuple=True, 
-                                                    activation=tf.tanh)
+                                                    activation=tf.tanh,
+                                                    reuse = reuse)
 
             backward_cell = tf.contrib.rnn.LSTMCell(num_units=self.hidden_unit, 
                                                     use_peepholes=False, 
@@ -92,7 +93,8 @@ class single_layer_BLSTM_withWemb(object):
                                                     num_proj_shards=None, 
                                                     forget_bias=1.0, 
                                                     state_is_tuple=True, 
-                                                    activation=tf.tanh)
+                                                    activation=tf.tanh, 
+                                                    reuse = reuse)
 
 
             output, state = tf.nn.bidirectional_dynamic_rnn(cell_fw=forward_cell, 
@@ -120,6 +122,94 @@ class single_layer_BLSTM_withWemb(object):
                 return output_fw + output_bw
 
 
+class single_layer_BLSTM(object):
+    """
+    single_layer_BLSTM is a wrapper class for more specific settings
+    of single layer Bidirectional LSTM
+    """
+    def __init__(self, hidden_unit, output_style):
+        """
+        constructor collects two model hyperparameters
+
+        Arguments: 
+        hidden_unit -- (int) the hidden unit size of RNN cell
+        output_style -- (string) choices: "last", "sequence"
+
+        """
+        super(single_layer_BLSTM, self).__init__()
+
+        self.hidden_unit = hidden_unit
+        self.output_style = output_style
+
+
+    def BLSTM_encoder(self, input_variable, seq_len, reuse = False, variable_scope = "BLSTM_encoder"):
+        """
+        Arguments: 
+
+        input_variable -- (tf.Variable, dtype == tf.float32) the input tensor of LSTM, 
+                          input_variable.shape == (batch_size, steps, feature_size)
+        seq_len -- (tf.Variable, dtype == tf.int32) the length of each sequence, 
+                   len(seq_len) == batch_size
+        reuse -- (Optional)(boolean) if the LM is reused
+        variable_scope -- (Optional)(string) will raise error if reused is False and LM been called after the first
+                          multiple times
+
+        Return:
+
+        output -- (tf.Variable, dtype == tf.float32) the output of the final or sequence of hidden vectors
+        """
+        with tf.variable_scope(variable_scope) as scope:
+            if reuse:
+                scope.reuse_variables()        
+            forward_cell = tf.contrib.rnn.LSTMCell( num_units=self.hidden_unit, 
+                                                    use_peepholes=False, 
+                                                    cell_clip=None, 
+                                                    initializer=tf.contrib.layers.xavier_initializer(dtype = tf.float32), 
+                                                    num_proj=None, 
+                                                    proj_clip=None, 
+                                                    num_unit_shards=None, 
+                                                    num_proj_shards=None, 
+                                                    forget_bias=1.0, 
+                                                    state_is_tuple=True, 
+                                                    activation=tf.tanh,
+                                                    reuse = reuse)
+
+            backward_cell = tf.contrib.rnn.LSTMCell(num_units=self.hidden_unit, 
+                                                    use_peepholes=False, 
+                                                    cell_clip=None, 
+                                                    initializer=tf.contrib.layers.xavier_initializer(dtype = tf.float32), 
+                                                    num_proj=None, 
+                                                    proj_clip=None, 
+                                                    num_unit_shards=None, 
+                                                    num_proj_shards=None, 
+                                                    forget_bias=1.0, 
+                                                    state_is_tuple=True, 
+                                                    activation=tf.tanh,
+                                                    reuse = reuse)
+
+
+            output, state = tf.nn.bidirectional_dynamic_rnn(cell_fw=forward_cell, 
+                                                            cell_bw=backward_cell, 
+                                                            inputs=input_variable, 
+                                                            sequence_length=seq_len, 
+                                                            initial_state_fw=None, 
+                                                            initial_state_bw=None, 
+                                                            dtype=tf.float32, 
+                                                            parallel_iterations=None, 
+                                                            swap_memory=False, 
+                                                            time_major=False, 
+                                                            scope=scope)
+
+            output_fw, output_bw = output
+            # output_fw in shape [batch, maxlen, n_feature]    
+
+            if self.output_style == "last":
+                relavent_output_fw = last_step(output_fw, None)
+                relavent_output_bw = last_step(output_bw, None)
+                
+                return relavent_output_fw + relavent_output_bw
+            else:
+                return output_fw + output_bw
 
 
 
